@@ -1,5 +1,17 @@
 module Liquid
+  class UnhandledError < ::StandardError
+    attr_accessor :line
+    attr_accessor :line_number
+    attr_accessor :template_name
+
+    def initialize(e)
+      super e
+      set_backtrace e.backtrace
+    end
+  end
+
   class Error < ::StandardError
+    attr_accessor :line
     attr_accessor :line_number
     attr_accessor :template_name
     attr_accessor :markup_context

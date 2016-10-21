@@ -73,10 +73,11 @@ module Liquid
       @interrupts.pop
     end
 
-    def handle_error(e, line_number = nil)
-      if e.is_a?(Liquid::Error)
+    def handle_error(e, line_number = nil, line = nil)
+      if ['Liquid::Error', 'Liquid::UnhandledError'].include?(e.class.name)
         e.template_name ||= template_name
         e.line_number ||= line_number
+        e.line ||= line
       end
 
       output = nil
@@ -86,9 +87,10 @@ module Liquid
         case result
         when Exception
           e = result
-          if e.is_a?(Liquid::Error)
+          if ['Liquid::Error', 'Liquid::UnhandledError'].include?(e.class.name)
             e.template_name ||= template_name
             e.line_number ||= line_number
+            e.line ||= line
           end
         when String
           output = result
